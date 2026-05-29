@@ -63,6 +63,15 @@ dependencies {
     // --- テスト(JUnit 5 + AssertJ + Mockito を含む) ---
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // --- テストスライス(Spring Boot 4.0 でモジュール分割された) ---
+    //  SB 3.x では @WebMvcTest / @DataJpaTest は spring-boot-test-autoconfigure に
+    //  同梱されていたが、SB 4.0 で技術別モジュールに分離され starter-test には
+    //  含まれなくなった(公式: docs.spring.io/.../reference/testing/test-modules.html)。
+    //  CLAUDE.md のテスト方針(@WebMvcTest / @DataJpaTest)を成立させるため明示追加する。
+    //  ※「依存追加禁止」の趣旨は starter 名の幻覚回避。本2件は公式4.0で実在確認済み。
+    testImplementation("org.springframework.boot:spring-boot-webmvc-test")    // @WebMvcTest
+    testImplementation("org.springframework.boot:spring-boot-data-jpa-test")  // @DataJpaTest
 }
 
 // ----------------------------------------------------------------------------

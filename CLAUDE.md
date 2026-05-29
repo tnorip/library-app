@@ -39,7 +39,8 @@
 - 依存注入は **コンストラクタ注入**（フィールド `@Autowired` 禁止）
 - `@Transactional` は同クラス内呼び出しでは効かない (Spring AOP の制約) — Service 分割で対応
 - JPA fetch は基本 `LAZY`、必要なら `@EntityGraph` または fetch join (N+1 回避)
-- **`build.gradle.kts` の依存関係は追加しない** — Spring Boot 4.0 で starter 名が再編済みのため幻覚リスクが高い
+- **`build.gradle.kts` の依存関係は原則追加しない** — Spring Boot 4.0 で starter 名が再編済みのため幻覚リスクが高い
+  - 例外: 公式 4.0 ドキュメントで実在確認済みのテストスライスモジュールは追加可。SB4 で `@WebMvcTest`/`@DataJpaTest` は `spring-boot-starter-test` から分離され、`spring-boot-webmvc-test`/`spring-boot-data-jpa-test` の明示追加が必須(雛形に追加済み)
 - パターンマッチング (switch expressions / sealed interfaces / record patterns) は積極使用可
 - Preview 機能 (Structured Concurrency 等) は `--enable-preview` が必要なため原則使用しない
 
