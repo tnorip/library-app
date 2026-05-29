@@ -6,7 +6,6 @@
 .gradle/
 .gradle-cache/
 build/
-!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -19,6 +18,8 @@ build/
 *.nar
 hs_err_pid*
 replay_pid*
+# gradle-wrapper.jar は受講者のセットアップに必須のため追跡対象に戻す
+!**/gradle/wrapper/gradle-wrapper.jar
 
 # ----- Spring Boot ----------------------------------------------------------
 # Spring Boot DevTools のリスタートトリガーファイル
