@@ -2,6 +2,8 @@ package training.aidd.library.book;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import training.aidd.library.audit.Audit;
+import training.aidd.library.loan.LoanRepository;
 
 import java.util.List;
 
@@ -11,10 +13,14 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookCopyRepository bookCopyRepository;
+    private final LoanRepository loanRepository;
 
-    public BookService(BookRepository bookRepository, BookCopyRepository bookCopyRepository) {
+    public BookService(BookRepository bookRepository,
+                       BookCopyRepository bookCopyRepository,
+                       LoanRepository loanRepository) {
         this.bookRepository = bookRepository;
         this.bookCopyRepository = bookCopyRepository;
+        this.loanRepository = loanRepository;
     }
 
     @Transactional(readOnly = true)
@@ -37,6 +43,7 @@ public class BookService {
         return toResponse(book);
     }
 
+    @Audit(action = "BOOK_CREATED", targetType = "Book")
     public BookResponse create(BookRequest request) {
         Book book = new Book();
         applyRequest(book, request);
@@ -44,6 +51,7 @@ public class BookService {
         return toResponse(savedBook);
     }
 
+    @Audit(action = "BOOK_UPDATED", targetType = "Book")
     public BookResponse update(Long id, BookRequest request) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
@@ -128,7 +136,12 @@ public class BookService {
     }
 
     private BookCopyResponse toCopyResponse(BookCopy copy) {
-        return new BookCopyResponse(copy.getId(), copy.getCopyCode(), copy.getStatus());
+        var dueDate = copy.getStatus() == CopyStatus.CHECKED_OUT
+                ? loanRepository.findFirstByBookCopyIdAndReturnedDateIsNull(copy.getId())
+                        .map(loan -> loan.getDueDate())
+                        .orElse(null)
+                : null;
+        return new BookCopyResponse(copy.getId(), copy.getCopyCode(), copy.getStatus(), dueDate);
     }
 
     private void applyRequest(Book book, BookRequest request) {

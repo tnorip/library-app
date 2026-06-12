@@ -5,15 +5,23 @@ import MemberForm from './members/MemberForm'
 import MemberList from './members/MemberList'
 import LoanPage from './loans/LoanPage'
 import LoanRulePage from './loanrules/LoanRulePage'
+import StatsPage from './stats/StatsPage'
+import ReservationPage from './reservations/ReservationPage'
+import AuditLogPage from './audit/AuditLogPage'
+import OverduePage from './overdue/OverduePage'
 import type { Member } from './api/client'
 
-type Tab = 'books' | 'members' | 'loans' | 'rules'
+type Tab = 'books' | 'members' | 'loans' | 'reservations' | 'rules' | 'stats' | 'audit' | 'overdue'
 
 const TAB_LABELS: Record<Tab, string> = {
-  books:   '図書管理',
-  members: '利用者管理',
-  loans:   '貸出・返却',
-  rules:   '貸出ルール',
+  books:        '図書管理',
+  members:      '利用者管理',
+  loans:        '貸出・返却',
+  reservations: '予約管理',
+  rules:        '貸出ルール',
+  stats:        '利用統計',
+  audit:        '監査ログ',
+  overdue:      '延滞管理',
 }
 
 export default function App() {
@@ -71,7 +79,15 @@ export default function App() {
 
       {tab === 'loans' && <LoanPage />}
 
+      {tab === 'reservations' && <ReservationPage />}
+
       {tab === 'rules' && <LoanRulePage />}
+
+      {tab === 'stats' && <StatsPage />}
+
+      {tab === 'audit'   && <AuditLogPage />}
+
+      {tab === 'overdue' && <OverduePage />}
     </div>
   )
 }

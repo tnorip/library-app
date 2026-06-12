@@ -162,7 +162,7 @@ class BookControllerTest {
 
     @Test
     void addCopy_validRequest_returns201() {
-        BookCopyResponse response = new BookCopyResponse(1L, "978-4-000-00001-0-001", CopyStatus.AVAILABLE);
+        BookCopyResponse response = new BookCopyResponse(1L, "978-4-000-00001-0-001", CopyStatus.AVAILABLE, null);
         when(bookService.addCopy(eq(1L), any(BookCopyRequest.class))).thenReturn(response);
 
         assertThat(mockMvc.post().uri("/api/books/1/copies")
@@ -177,7 +177,7 @@ class BookControllerTest {
 
     @Test
     void updateCopyStatus_validTransition_returns200() {
-        BookCopyResponse response = new BookCopyResponse(1L, "978-4-000-00001-0-001", CopyStatus.REPAIR);
+        BookCopyResponse response = new BookCopyResponse(1L, "978-4-000-00001-0-001", CopyStatus.REPAIR, null);
         when(bookService.updateCopyStatus(1L, 1L, CopyStatus.REPAIR)).thenReturn(response);
 
         assertThat(mockMvc.patch().uri("/api/books/1/copies/1/status")

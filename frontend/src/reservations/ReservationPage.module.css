@@ -1,0 +1,43 @@
+.page h3 { margin-bottom: 1rem; }
+.row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.row label { font-weight: 600; }
+.row select { padding: 0.4rem 0.6rem; border: 1px solid #ccc; border-radius: 4px; min-width: 240px; }
+
+.success { color: #196; font-weight: bold; margin: 0.5rem 0; }
+.error   { color: #c00; margin: 0.5rem 0; }
+.noData  { color: #888; }
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+.columns h4 { margin: 0 0 0.75rem; }
+
+.searchForm { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+.searchForm input { flex: 1; padding: 0.4rem 0.6rem; border: 1px solid #ccc; border-radius: 4px; }
+.searchForm button { padding: 0.4rem 1rem; background: #3498db; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table th, .table td { border: 1px solid #ddd; padding: 0.4rem 0.6rem; }
+.table th { background: #f5f5f5; }
+
+.available  { color: #196; font-weight: bold; }
+.checkedOut { color: #c00; }
+
+.waiting   { color: #e67e22; font-weight: bold; }
+.ready     { color: #196; font-weight: bold; }
+.cancelled { color: #888; }
+.fulfilled { color: #555; }
+
+.reserveBtn {
+  padding: 2px 10px; background: #3498db; color: #fff;
+  border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+}
+.reserveBtn:disabled { background: #aaa; cursor: not-allowed; }
+.cancelBtn {
+  padding: 2px 8px; background: none; border: 1px solid #c00;
+  color: #c00; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+}
+.cancelBtn:hover { background: #c00; color: #fff; }

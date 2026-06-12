@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import training.aidd.library.loan.LoanRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,9 @@ class BookServiceTest {
 
     @Mock
     BookCopyRepository bookCopyRepository;
+
+    @Mock
+    LoanRepository loanRepository;
 
     @InjectMocks
     BookService bookService;

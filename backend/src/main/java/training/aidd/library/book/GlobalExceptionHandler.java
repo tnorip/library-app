@@ -12,6 +12,8 @@ import training.aidd.library.loan.LoanLimitExceededException;
 import training.aidd.library.loan.LoanNotFoundException;
 import training.aidd.library.loan.MemberNotActiveException;
 import training.aidd.library.member.MemberNotFoundException;
+import training.aidd.library.reservation.AlreadyReservedException;
+import training.aidd.library.reservation.ReservationNotFoundException;
 import training.aidd.library.staff.StaffNotFoundException;
 
 @RestControllerAdvice
@@ -87,6 +89,20 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleStaffNotFound(StaffNotFoundException ex) {
         log.warn("Not found: {}", ex.getMessage());
         return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(ReservationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleReservationNotFound(ReservationNotFoundException ex) {
+        log.warn("Not found: {}", ex.getMessage());
+        return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyReservedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleAlreadyReserved(AlreadyReservedException ex) {
+        log.warn("Conflict: {}", ex.getMessage());
+        return new ErrorResponse(409, ex.getMessage());
     }
 
     @ExceptionHandler(AlreadyReturnedException.class)

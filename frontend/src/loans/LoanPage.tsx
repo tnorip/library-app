@@ -60,7 +60,8 @@ export default function LoanPage() {
     }
   }
 
-  const activeLoans = loans.filter((l) => !l.returnedDate)
+  const activeLoans  = loans.filter((l) => !l.returnedDate)
+  const returnedLoans = loans.filter((l) => l.returnedDate)
 
   return (
     <div>
@@ -124,6 +125,28 @@ export default function LoanPage() {
                 ))}
               </tbody>
             </table>
+          )}
+          {/* 返却済み履歴 */}
+          {returnedLoans.length > 0 && (
+            <details style={{ marginTop: '1.5rem' }}>
+              <summary style={{ cursor: 'pointer', color: '#555' }}>
+                返却済み履歴 ({returnedLoans.length}件)
+              </summary>
+              <table className={styles.table} style={{ marginTop: '0.5rem', opacity: 0.7 }}>
+                <thead>
+                  <tr><th>タイトル</th><th>貸出日</th><th>返却日</th></tr>
+                </thead>
+                <tbody>
+                  {returnedLoans.map((l) => (
+                    <tr key={l.id}>
+                      <td>{l.bookTitle}</td>
+                      <td>{l.loanDate}</td>
+                      <td>{l.returnedDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
           )}
         </>
       )}

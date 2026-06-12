@@ -7,8 +7,10 @@ import training.aidd.library.book.BookCopyRepository;
 import training.aidd.library.book.BookNotFoundException;
 import training.aidd.library.book.CopyStatus;
 import training.aidd.library.member.Member;
+import training.aidd.library.audit.Audit;
 import training.aidd.library.member.MemberNotFoundException;
 import training.aidd.library.member.MemberRepository;
+import training.aidd.library.reservation.ReservationService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,17 +23,21 @@ public class LoanService {
     private final LoanRuleRepository loanRuleRepository;
     private final BookCopyRepository bookCopyRepository;
     private final MemberRepository memberRepository;
+    private final ReservationService reservationService;
 
     public LoanService(LoanRepository loanRepository,
                        LoanRuleRepository loanRuleRepository,
                        BookCopyRepository bookCopyRepository,
-                       MemberRepository memberRepository) {
+                       MemberRepository memberRepository,
+                       ReservationService reservationService) {
         this.loanRepository = loanRepository;
         this.loanRuleRepository = loanRuleRepository;
         this.bookCopyRepository = bookCopyRepository;
         this.memberRepository = memberRepository;
+        this.reservationService = reservationService;
     }
 
+    @Audit(action = "LOAN_CHECKOUT", targetType = "Loan")
     public LoanResponse checkout(LoanRequest request) {
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(() -> new MemberNotFoundException(request.memberId()));
@@ -60,6 +66,7 @@ public class LoanService {
         return toResponse(savedLoan);
     }
 
+    @Audit(action = "LOAN_RETURNED", targetType = "Loan")
     public LoanResponse returnBook(Long loanId) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
@@ -74,6 +81,10 @@ public class LoanService {
 
         bookCopyRepository.save(copy);
         Loan savedLoan = loanRepository.save(loan);
+
+        // 予約待ちがあれば先頭の予約者を READY に昇格
+        reservationService.notifyNextReservation(copy.getBook().getId());
+
         return toResponse(savedLoan);
     }
 

@@ -6,11 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import training.aidd.library.book.Book;
 import training.aidd.library.book.BookCopy;
 import training.aidd.library.book.BookCopyRepository;
 import training.aidd.library.book.CopyStatus;
 import training.aidd.library.member.Member;
 import training.aidd.library.member.MemberRepository;
+import training.aidd.library.reservation.ReservationService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +30,7 @@ class LoanServiceTest {
     @Mock LoanRepository loanRepository;
     @Mock LoanRuleRepository loanRuleRepository;
     @Mock BookCopyRepository bookCopyRepository;
+    @Mock ReservationService reservationService;
     @Mock MemberRepository memberRepository;
 
     @InjectMocks
@@ -45,10 +48,15 @@ class LoanServiceTest {
         activeMember.setName("佐藤 花子");
         activeMember.setActive(true);
 
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("吾輩は猫である");
+
         availableCopy = new BookCopy();
         availableCopy.setId(1L);
         availableCopy.setCopyCode("ISBN-001");
         availableCopy.setStatus(CopyStatus.AVAILABLE);
+        availableCopy.setBook(book);
 
         defaultRule = new LoanRule();
         defaultRule.setId(1L);

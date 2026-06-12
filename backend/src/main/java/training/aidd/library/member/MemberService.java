@@ -2,6 +2,7 @@ package training.aidd.library.member;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import training.aidd.library.audit.Audit;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class MemberService {
         return toResponse(member);
     }
 
+    @Audit(action = "MEMBER_CREATED", targetType = "Member")
     public MemberResponse create(MemberRequest request) {
         Member member = new Member();
         applyRequest(member, request);
@@ -36,6 +38,7 @@ public class MemberService {
         return toResponse(savedMember);
     }
 
+    @Audit(action = "MEMBER_UPDATED", targetType = "Member")
     public MemberResponse update(Long id, MemberRequest request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));

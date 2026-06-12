@@ -29,6 +29,7 @@ export interface BookCopy {
   id: number
   copyCode: string
   status: CopyStatus
+  dueDate: string | null
 }
 
 export interface Book {
@@ -117,3 +118,69 @@ export interface LoanRuleRequest {
 
 export const fetchLoanRule  = () => api.get<LoanRule>('/api/loan-rules/1')
 export const updateLoanRule = (body: LoanRuleRequest) => api.put<LoanRule>('/api/loan-rules/1', body)
+
+// ─── 統計 ────────────────────────────────────────────────────────────────────
+
+export interface StatsResponse {
+  totalBooks: number
+  totalMembers: number
+  activeLoans: number
+  overdueLoans: number
+  loansByMonth: { month: string; count: number }[]
+  topGenres: { genre: string; count: number }[]
+}
+
+export const fetchStats = () => api.get<StatsResponse>('/api/stats')
+
+// ─── 予約 ────────────────────────────────────────────────────────────────────
+
+export type ReservationStatus = 'WAITING' | 'READY' | 'CANCELLED' | 'FULFILLED'
+
+export interface Reservation {
+  id: number
+  bookId: number
+  bookTitle: string
+  memberId: number
+  memberName: string
+  reservedAt: string
+  status: ReservationStatus
+}
+
+export const fetchReservationsByMember = (memberId: number) =>
+  api.get<Reservation[]>(`/api/reservations?memberId=${memberId}`)
+export const fetchReservationsByBook = (bookId: number) =>
+  api.get<Reservation[]>(`/api/reservations?bookId=${bookId}`)
+export const createReservation = (bookId: number, memberId: number) =>
+  api.post<Reservation>('/api/reservations', { bookId, memberId })
+export const cancelReservation = (reservationId: number, memberId: number) =>
+  api.delete<void>(`/api/reservations/${reservationId}?memberId=${memberId}`)
+
+// ─── 監査ログ ─────────────────────────────────────────────────────────────────
+
+export interface AuditLog {
+  id: number
+  action: string
+  targetType: string
+  targetId: string | null
+  performedBy: string
+  performedAt: string
+}
+
+export const fetchAuditLogs = (user?: string) =>
+  api.get<AuditLog[]>(user ? `/api/audit-logs?user=${encodeURIComponent(user)}` : '/api/audit-logs')
+
+// ─── 延滞管理 ─────────────────────────────────────────────────────────────────
+
+export interface OverdueItem {
+  loanId: number
+  memberId: number
+  memberName: string
+  memberEmail: string
+  bookTitle: string
+  copyCode: string
+  dueDate: string
+  overdueDays: number
+}
+
+export const fetchOverdue    = () => api.get<OverdueItem[]>('/api/overdue')
+export const sendReminders   = () => api.post<OverdueItem[]>('/api/overdue/notify', {})
