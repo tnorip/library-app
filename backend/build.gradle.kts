@@ -60,6 +60,10 @@ dependencies {
     // --- データベース(研修中は H2 in-memory をデフォルト) ---
     runtimeOnly("com.h2database:h2")
 
+    // --- セキュリティ(ロールベースアクセス制御) ---
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
     // --- テスト(JUnit 5 + AssertJ + Mockito を含む) ---
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -88,6 +92,9 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    maxHeapSize = "512m"
+    // Java 21+ でMockitoのByte Buddyエージェントが動的アタッチを必要とするため
+    jvmArgs("-XX:+EnableDynamicAgentLoading", "-Djdk.attach.allowAttachSelf=true")
     // Preview 機能を使う場合:
     // jvmArgs("--enable-preview")
 }

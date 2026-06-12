@@ -1,9 +1,3 @@
-// HTTP クライアント (fetch ラッパー)
-//
-// vite.config.ts の proxy 設定により、相対パスで Spring Boot にリクエストが届く。
-//   FE: fetch('/api/books')  →  Vite proxy  →  http://localhost:8080/api/books
-// CORS の設定は不要。新しいエンドポイントは vite.config.ts の proxy にも追記すること。
-
 const BASE_URL = ''
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -12,8 +6,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
   })
   if (!res.ok) {
-    throw new Error(`API error: ${res.status} ${res.statusText}`)
+    const text = await res.text().catch(() => '')
+    throw new Error(text || `API error: ${res.status}`)
   }
+  if (res.status === 204) return undefined as T
   return res.json() as Promise<T>
 }
 
@@ -21,10 +17,11 @@ export const api = {
   get:    <T>(path: string)                => request<T>(path),
   post:   <T>(path: string, body: unknown) => request<T>(path, { method: 'POST',   body: JSON.stringify(body) }),
   put:    <T>(path: string, body: unknown) => request<T>(path, { method: 'PUT',    body: JSON.stringify(body) }),
+  patch:  <T>(path: string, body: unknown) => request<T>(path, { method: 'PATCH',  body: JSON.stringify(body) }),
   delete: <T>(path: string)               => request<T>(path, { method: 'DELETE' }),
 }
 
-// ─── 型定義 ────────────────────────────────────────────────────────────────────
+// ─── 図書 ────────────────────────────────────────────────────────────────────
 
 export type CopyStatus = 'AVAILABLE' | 'CHECKED_OUT' | 'REPAIR' | 'DISCARDED'
 
@@ -54,30 +51,69 @@ export interface BookRequest {
   callNumber: string
 }
 
-// ─── 図書 API ──────────────────────────────────────────────────────────────────
+export const fetchBooks   = (q?: string) =>
+  api.get<Book[]>(q ? `/api/books?q=${encodeURIComponent(q)}` : '/api/books')
+export const createBook   = (body: BookRequest) => api.post<Book>('/api/books', body)
+export const deleteBook   = (id: number) => api.delete<void>(`/api/books/${id}`)
 
-export async function fetchBooks(q?: string): Promise<Book[] | null> {
-  try {
-    const path = q ? `/api/books?q=${encodeURIComponent(q)}` : '/api/books'
-    return await api.get<Book[]>(path)
-  } catch {
-    return null
-  }
+// ─── 利用者 ──────────────────────────────────────────────────────────────────
+
+export interface Member {
+  id: number
+  memberNumber: string
+  name: string
+  email: string
+  phone: string
+  active: boolean
 }
 
-export async function createBook(body: BookRequest): Promise<Book | null> {
-  try {
-    return await api.post<Book>('/api/books', body)
-  } catch {
-    return null
-  }
+export interface MemberRequest {
+  memberNumber: string
+  name: string
+  email: string
+  phone: string
 }
 
-export async function deleteBook(id: number): Promise<boolean> {
-  try {
-    await api.delete<void>(`/api/books/${id}`)
-    return true
-  } catch {
-    return false
-  }
+export const fetchMembers    = () => api.get<Member[]>('/api/members')
+export const createMember    = (body: MemberRequest) => api.post<Member>('/api/members', body)
+export const deactivateMember = (id: number) => api.delete<void>(`/api/members/${id}`)
+
+// ─── 貸出 ────────────────────────────────────────────────────────────────────
+
+export interface Loan {
+  id: number
+  memberId: number
+  memberName: string
+  bookCopyId: number
+  copyCode: string
+  bookTitle: string
+  loanDate: string
+  dueDate: string
+  returnedDate: string | null
 }
+
+export interface LoanRequest {
+  memberId: number
+  bookCopyId: number
+}
+
+export const fetchLoansByMember = (memberId: number) =>
+  api.get<Loan[]>(`/api/loans?memberId=${memberId}`)
+export const checkout   = (body: LoanRequest) => api.post<Loan>('/api/loans', body)
+export const returnBook = (loanId: number)    => api.post<Loan>(`/api/loans/${loanId}/return`, {})
+
+// ─── 貸出ルール ───────────────────────────────────────────────────────────────
+
+export interface LoanRule {
+  id: number
+  maxLoanCount: number
+  loanPeriodDays: number
+}
+
+export interface LoanRuleRequest {
+  maxLoanCount: number
+  loanPeriodDays: number
+}
+
+export const fetchLoanRule  = () => api.get<LoanRule>('/api/loan-rules/1')
+export const updateLoanRule = (body: LoanRuleRequest) => api.put<LoanRule>('/api/loan-rules/1', body)

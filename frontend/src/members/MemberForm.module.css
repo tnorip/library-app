@@ -1,0 +1,7 @@
+.form { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
+.form h3 { margin: 0 0 0.75rem; }
+.row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.row input { flex: 1; min-width: 150px; padding: 0.4rem 0.6rem; border: 1px solid #ccc; border-radius: 4px; }
+.row button { padding: 0.4rem 1rem; background: #2a7; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+.row button:hover { background: #196; }
+.error { color: #c00; margin: 0 0 0.5rem; }

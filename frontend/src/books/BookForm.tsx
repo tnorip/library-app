@@ -38,16 +38,15 @@ export default function BookForm({ onCreated }: Props) {
     }
 
     setSubmitting(true)
-    const result = await createBook(form)
-    setSubmitting(false)
-
-    if (result === null) {
-      setError('登録に失敗しました。入力内容を確認してください。')
-      return
+    try {
+      await createBook(form)
+      setForm(EMPTY)
+      onCreated()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '登録に失敗しました。入力内容を確認してください。')
+    } finally {
+      setSubmitting(false)
     }
-
-    setForm(EMPTY)
-    onCreated()
   }
 
   return (

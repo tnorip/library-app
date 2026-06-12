@@ -15,24 +15,20 @@ export default function BookList({ refreshKey }: Props) {
   useEffect(() => {
     setLoading(true)
     setError(false)
-    fetchBooks(query || undefined).then((result) => {
-      if (result === null) {
-        setError(true)
-      } else {
-        setBooks(result)
-      }
-      setLoading(false)
-    })
+    fetchBooks(query || undefined)
+      .then((result) => setBooks(result))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
   }, [refreshKey, query])
 
   async function handleDelete(book: Book) {
     if (!window.confirm(`「${book.title}」を削除しますか？`)) return
-    const ok = await deleteBook(book.id)
-    if (!ok) {
-      alert('削除に失敗しました。')
-      return
+    try {
+      await deleteBook(book.id)
+      setBooks((prev) => prev.filter((b) => b.id !== book.id))
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '削除に失敗しました。')
     }
-    setBooks((prev) => prev.filter((b) => b.id !== book.id))
   }
 
   return (

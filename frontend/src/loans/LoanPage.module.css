@@ -1,0 +1,24 @@
+.memberSelect select {
+  padding: 0.4rem 0.6rem; border: 1px solid #ccc; border-radius: 4px;
+  min-width: 260px; margin-bottom: 0.75rem;
+}
+.checkoutForm {
+  display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem;
+}
+.checkoutForm input {
+  padding: 0.4rem 0.6rem; border: 1px solid #ccc; border-radius: 4px; width: 200px;
+}
+.checkoutForm button {
+  padding: 0.4rem 1rem; background: #2a7; color: #fff; border: none; border-radius: 4px; cursor: pointer;
+}
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { border: 1px solid #ddd; padding: 0.5rem 0.75rem; }
+.table th { background: #f5f5f5; }
+.returnBtn {
+  background: none; border: 1px solid #555; border-radius: 4px;
+  padding: 2px 8px; cursor: pointer;
+}
+.returnBtn:hover { background: #555; color: #fff; }
+.overdue { color: #c00; font-weight: bold; }
+.success { color: #196; font-weight: bold; }
+.error { color: #c00; }

@@ -6,6 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import training.aidd.library.loan.AlreadyReturnedException;
+import training.aidd.library.loan.CopyNotAvailableException;
+import training.aidd.library.loan.LoanLimitExceededException;
+import training.aidd.library.loan.LoanNotFoundException;
+import training.aidd.library.loan.MemberNotActiveException;
+import training.aidd.library.member.MemberNotFoundException;
+import training.aidd.library.staff.StaffNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,6 +45,55 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleIllegalStatusTransition(IllegalStatusTransitionException ex) {
         log.warn("Illegal status transition: {}", ex.getMessage());
         return new ErrorResponse(400, ex.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleMemberNotFound(MemberNotFoundException ex) {
+        log.warn("Not found: {}", ex.getMessage());
+        return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(LoanNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleLoanNotFound(LoanNotFoundException ex) {
+        log.warn("Not found: {}", ex.getMessage());
+        return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(CopyNotAvailableException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleCopyNotAvailable(CopyNotAvailableException ex) {
+        log.warn("Conflict: {}", ex.getMessage());
+        return new ErrorResponse(409, ex.getMessage());
+    }
+
+    @ExceptionHandler(LoanLimitExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleLoanLimit(LoanLimitExceededException ex) {
+        log.warn("Bad request: {}", ex.getMessage());
+        return new ErrorResponse(400, ex.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotActiveException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMemberNotActive(MemberNotActiveException ex) {
+        log.warn("Bad request: {}", ex.getMessage());
+        return new ErrorResponse(400, ex.getMessage());
+    }
+
+    @ExceptionHandler(StaffNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleStaffNotFound(StaffNotFoundException ex) {
+        log.warn("Not found: {}", ex.getMessage());
+        return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyReturnedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleAlreadyReturned(AlreadyReturnedException ex) {
+        log.warn("Conflict: {}", ex.getMessage());
+        return new ErrorResponse(409, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
