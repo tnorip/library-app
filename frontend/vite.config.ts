@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // Spring Boot(port 8080)へのプロキシ — CORS 設定不要
       // 新しいエンドポイントを追加したらここにも追記する
-      '/books':        'http://localhost:8080',
+      '/api':          'http://localhost:8080',
       '/reservations': 'http://localhost:8080',
       '/actuator':     'http://localhost:8080',
     },

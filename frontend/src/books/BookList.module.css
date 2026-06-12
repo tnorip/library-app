@@ -1,0 +1,63 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.heading {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.search {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 220px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.table tr:hover td {
+  background: #fafafa;
+}
+
+.status {
+  color: #555;
+}
+
+.error {
+  color: #c0392b;
+}
+
+.deleteBtn {
+  padding: 0.2rem 0.6rem;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.deleteBtn:hover {
+  background: #c0392b;
+}

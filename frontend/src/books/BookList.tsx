@@ -1,12 +1,93 @@
-// Day 4 ワーク: 図書一覧コンポーネントを実装する
-//
-// ゴール:
-//   - GET /books を呼び出して Book[] を取得する
-//   - 取得結果をリスト表示する
-//   - ローディング中・エラー時の表示も実装する
-//
-// ヒント: api.get<Book[]>('/books') を使う (src/api/client.ts を参照)
+import { useEffect, useState } from 'react'
+import { fetchBooks, deleteBook, type Book } from '../api/client'
+import styles from './BookList.module.css'
 
-export default function BookList() {
-  return <p>（BookList を実装してください）</p>
+interface Props {
+  refreshKey: number
+}
+
+export default function BookList({ refreshKey }: Props) {
+  const [books, setBooks] = useState<Book[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    setLoading(true)
+    setError(false)
+    fetchBooks(query || undefined).then((result) => {
+      if (result === null) {
+        setError(true)
+      } else {
+        setBooks(result)
+      }
+      setLoading(false)
+    })
+  }, [refreshKey, query])
+
+  async function handleDelete(book: Book) {
+    if (!window.confirm(`「${book.title}」を削除しますか？`)) return
+    const ok = await deleteBook(book.id)
+    if (!ok) {
+      alert('削除に失敗しました。')
+      return
+    }
+    setBooks((prev) => prev.filter((b) => b.id !== book.id))
+  }
+
+  return (
+    <section>
+      <div className={styles.toolbar}>
+        <h2 className={styles.heading}>図書一覧</h2>
+        <input
+          className={styles.search}
+          type="search"
+          placeholder="タイトル・著者で検索..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+
+      {loading && <p className={styles.status}>読み込み中...</p>}
+      {error   && <p className={styles.error}>図書一覧の取得に失敗しました。</p>}
+
+      {!loading && !error && books.length === 0 && (
+        <p className={styles.status}>登録されている図書はありません。</p>
+      )}
+
+      {!loading && !error && books.length > 0 && (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>タイトル</th>
+              <th>著者</th>
+              <th>ISBN</th>
+              <th>出版社</th>
+              <th>出版年</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.map((book) => (
+              <tr key={book.id}>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.isbn}</td>
+                <td>{book.publisher}</td>
+                <td>{book.publishedYear}</td>
+                <td>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => handleDelete(book)}
+                  >
+                    削除
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </section>
+  )
 }
