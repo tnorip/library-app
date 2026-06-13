@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,12 +36,12 @@ public class MemberController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MemberResponse createMember(@RequestBody MemberRequest request) {
+    public MemberResponse createMember(@Valid @RequestBody MemberRequest request) {
         return memberService.create(request);
     }
 
     @PutMapping("/{id}")
-    public MemberResponse updateMember(@PathVariable Long id, @RequestBody MemberRequest request) {
+    public MemberResponse updateMember(@PathVariable Long id, @Valid @RequestBody MemberRequest request) {
         return memberService.update(id, request);
     }
 

@@ -42,10 +42,10 @@ public class StatsService {
                 .gather(groupByMonth())
                 .toList();
 
-        List<GenreStat> topGenres = bookRepository.findAll().stream()
-                .map(book -> book.getCallNumber() == null || book.getCallNumber().isBlank()
+        List<GenreStat> topGenres = bookRepository.findAllCallNumbers().stream()
+                .map(cn -> cn == null || cn.isBlank()
                         ? "未分類"
-                        : book.getCallNumber().substring(0, Math.min(3, book.getCallNumber().length())))
+                        : cn.substring(0, Math.min(3, cn.length())))
                 .gather(countByKey())
                 .gather(topN(5, Comparator.comparingLong(GenreStat::count)))
                 .toList();

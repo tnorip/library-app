@@ -58,7 +58,6 @@ erDiagram
         Long id PK
         Long bookCopyId FK
         Long memberId FK
-        Long staffId FK "貸出処理を行った職員"
         LocalDate loanDate
         LocalDate dueDate
         LocalDate returnedDate "NULL = 貸出中"
@@ -71,14 +70,11 @@ erDiagram
         Integer maxLoanCount "貸出上限冊数（デフォルト10）"
         Integer loanPeriodDays "貸出期間日数（デフォルト14）"
         LocalDateTime updatedAt
-        Long updatedByStaffId FK "変更した職員"
     }
 
     BOOK ||--o{ BOOK_COPY : "1冊の書誌に複数の現物"
     BOOK_COPY ||--o{ LOAN : "1現物に複数の貸出履歴"
     MEMBER ||--o{ LOAN : "1利用者に複数の貸出"
-    STAFF ||--o{ LOAN : "職員が貸出処理"
-    STAFF ||--o| LOAN_RULE : "主任以上が貸出ルールを変更"
 ```
 
 ---

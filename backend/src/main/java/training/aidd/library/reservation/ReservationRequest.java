@@ -1,3 +1,9 @@
 package training.aidd.library.reservation;
 
-public record ReservationRequest(Long bookId, Long memberId) {}
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+public record ReservationRequest(
+        @NotNull @Positive Long bookId,
+        @NotNull @Positive Long memberId
+) {}

@@ -1,5 +1,6 @@
 package training.aidd.library.loan;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     long countByReturnedDateIsNullAndDueDateBefore(LocalDate date);
 
+    @EntityGraph(attributePaths = {"member", "bookCopy", "bookCopy.book"})
     List<Loan> findByReturnedDateIsNullAndDueDateBefore(LocalDate date);
 
     List<Loan> findByLoanDateAfter(LocalDate date);

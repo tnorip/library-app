@@ -37,8 +37,8 @@ public class OverdueService {
 
         overdue.forEach(o -> {
             // 実メール送信はここに差し込む (JavaMailSender 等)
-            log.info("[督促通知] {} <{}> 「{}」{} 日延滞",
-                    o.memberName(), o.memberEmail(), o.bookTitle(), o.overdueDays());
+            log.info("[督促通知] memberId={} loanId={} overdueDays={}",
+                    o.memberId(), o.loanId(), o.overdueDays());
 
             auditLogService.log(
                     "OVERDUE_NOTIFIED",

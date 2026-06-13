@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import training.aidd.library.book.BookCopy;
 import training.aidd.library.member.Member;
@@ -66,4 +68,10 @@ public class Loan {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    @PrePersist
+    void onCreate() { createdAt = updatedAt = LocalDateTime.now(); }
+
+    @PreUpdate
+    void onUpdate() { updatedAt = LocalDateTime.now(); }
 }
